@@ -13,6 +13,32 @@ from frappe_appointment.overrides.event_override import _create_event_for_appoin
 
 @frappe.whitelist(allow_guest=True)
 @add_response_code
+def get_all_available_users():
+    user_availability_list = frappe.get_all(
+        "User Appointment Availability",
+        filters={"enable_scheduling": 1},
+        fields=["user", "slug", "name"],
+    )
+
+    users = []
+    for availability in user_availability_list:
+        user = frappe.get_value(
+            "User", availability.get("user"), ["full_name", "user_image"], as_dict=True
+        )
+        if user:
+            users.append(
+                {
+                    "slug": availability.get("slug"),
+                    "full_name": user.get("full_name"),
+                    "user_image": user.get("user_image"),
+                }
+            )
+
+    return users, 200
+
+
+@frappe.whitelist(allow_guest=True)
+@add_response_code
 def get_meeting_windows(slug):
     user_availability = frappe.get_all(
         "User Appointment Availability", filters={"slug": slug, "enable_scheduling": 1}, fields=["*"]
