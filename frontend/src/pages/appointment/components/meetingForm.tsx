@@ -25,6 +25,13 @@ import {
   FormMessage,
 } from "@/components/form";
 import { Input } from "@/components/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/select";
 import Typography from "@/components/typography";
 import { useAppContext } from "@/context/app";
 import {
@@ -33,11 +40,25 @@ import {
 } from "@/lib/utils";
 import Spinner from "@/components/spinner";
 
-const contactFormSchema = z.object({
-  fullName: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  guests: z.array(z.string().email("Please enter a valid email address")),
-});
+const contactFormSchema = z
+  .object({
+    fullName: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Please enter a valid email address"),
+    guests: z.array(z.string().email("Please enter a valid email address")),
+    meetingType: z.enum(["Online", "Offline", "Other"], {
+      required_error: "Please select a meeting type",
+    }),
+    note: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.meetingType === "Other" && !data.note?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Note is required when meeting type is Other",
+        path: ["note"],
+      });
+    }
+  });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
@@ -70,8 +91,12 @@ const MeetingForm = ({
       fullName: "",
       email: "",
       guests: [],
+      meetingType: undefined,
+      note: "",
     },
   });
+
+  const meetingType = form.watch("meetingType");
 
   const handleGuestKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
@@ -117,6 +142,8 @@ const MeetingForm = ({
       user_name: data.fullName,
       user_email: data.email,
       other_participants: data.guests.join(", "),
+      meeting_type: data.meetingType,
+      note: data.note || "",
     };
 
     bookMeeting(meetingData)
@@ -229,6 +256,65 @@ const MeetingForm = ({
                       form.formState.errors.email ? "text-red-500" : ""
                     }`}
                   />
+                </FormItem>
+              )}
+            />
+          
+            <FormField
+              control={form.control}
+              name="meetingType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={form.formState.errors.meetingType ? "text-red-500" : ""}>
+                    Meeting Type{" "}
+                    <span className="text-red-500 dark:text-red-600">*</span>
+                  </FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className={`focus:ring-blue-400 ${form.formState.errors.meetingType ? "focus:ring-red-500 border-red-500" : ""}`}>
+                        <SelectValue placeholder="Select meeting type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Online">Online</SelectItem>
+                      <SelectItem value="Offline">Offline</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className={form.formState.errors.meetingType ? "text-red-500" : ""} />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="note"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={form.formState.errors.note ? "text-red-500" : ""}>
+                    Note{" "}
+                    {meetingType === "Other" && (
+                      <span className="text-red-500 dark:text-red-600">*</span>
+                    )}
+                  </FormLabel>
+                  <FormControl>
+                    <textarea
+                      disabled={loading}
+                      rows={3}
+                      placeholder="Please describe the meeting details..."
+                      className={`w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none focus-visible:ring-blue-400 ${
+                        form.formState.errors.note
+                          ? "border-red-500 focus-visible:ring-red-500"
+                          : ""
+                      }`}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className={form.formState.errors.note ? "text-red-500" : ""} />
                 </FormItem>
               )}
             />
