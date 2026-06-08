@@ -170,7 +170,7 @@ const MeetingForm = ({
   return (
     <motion.div
       key={2}
-      className={`w-full md:h-[31rem] lg:w-[41rem] shrink-0 md:p-6 md:px-4`}
+      className={`w-full md:h-[38rem] lg:w-[41rem] shrink-0 md:p-6 md:px-4 flex flex-col`}
       initial={isMobileView ? {} : { x: "100%" }}
       animate={{ x: 0 }}
       exit={isMobileView ? {} : { x: "100%" }}
@@ -179,9 +179,9 @@ const MeetingForm = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 h-full flex justify-between flex-col"
+          className="space-y-6 h-full flex flex-col min-h-0"
         >
-          <div className="space-y-4">
+          <div className="space-y-4 flex-1 overflow-y-auto min-h-0 pr-1">
             <div className="flex gap-3 max-md:flex-col md:items-center md:justify-between">
               <Typography variant="p" className="text-2xl">
                 Your contact info
@@ -363,7 +363,7 @@ const MeetingForm = ({
             </div>
           </div>
 
-          <div className="flex justify-between md:pt-4 max-md:h-14 max-md:fixed max-md:bottom-0 max-md:left-0 max-md:w-screen max-md:border max-md:z-10 max-md:bg-background max-md:border-top max-md:items-center max-md:px-4">
+          <div className="flex justify-between md:pt-4 shrink-0 max-md:h-14 max-md:fixed max-md:bottom-0 max-md:left-0 max-md:w-screen max-md:border max-md:z-10 max-md:bg-background max-md:border-top max-md:items-center max-md:px-4">
             <Button
               type="button"
               className="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-400 md:hover:bg-blue-50 md:dark:hover:bg-blue-800/10 max-md:px-0 max-md:hover:underline max-md:hover:bg-transparent"
