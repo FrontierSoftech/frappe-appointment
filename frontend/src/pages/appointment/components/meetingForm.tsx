@@ -44,6 +44,7 @@ const contactFormSchema = z
   .object({
     fullName: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Please enter a valid email address"),
+    mobileNo: z.string().min(1, "Mobile number is required"),
     guests: z.array(z.string().email("Please enter a valid email address")),
     meetingType: z.enum(["Online", "Offline", "Other"], {
       required_error: "Please select a meeting type",
@@ -90,6 +91,7 @@ const MeetingForm = ({
     defaultValues: {
       fullName: "",
       email: "",
+      mobileNo: "",
       guests: [],
       meetingType: undefined,
       note: "",
@@ -141,6 +143,7 @@ const MeetingForm = ({
       end_time: selectedSlot.end_time,
       user_name: data.fullName,
       user_email: data.email,
+      mobile_no: data.mobileNo,
       other_participants: data.guests.join(", "),
       meeting_type: data.meetingType,
       note: data.note || "",
@@ -260,6 +263,41 @@ const MeetingForm = ({
               )}
             />
           
+            <FormField
+              control={form.control}
+              name="mobileNo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    className={`${
+                      form.formState.errors.mobileNo ? "text-red-500" : ""
+                    }`}
+                  >
+                    Mobile No{" "}
+                    <span className="text-red-500 dark:text-red-600">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      type="tel"
+                      className={`active:ring-blue-400 focus-visible:ring-blue-400 ${
+                        form.formState.errors.mobileNo
+                          ? "active:ring-red-500 focus-visible:ring-red-500"
+                          : ""
+                      }`}
+                      placeholder="+91 9876543210"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage
+                    className={`${
+                      form.formState.errors.mobileNo ? "text-red-500" : ""
+                    }`}
+                  />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="meetingType"

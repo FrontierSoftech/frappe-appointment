@@ -620,6 +620,7 @@ def _create_event_for_appointment_group(
         "custom_appointment_group": appointment_group.name,
         "custom_meeting_type": event_info.get("meeting_type"),
         "custom_meeting_note": event_info.get("note"),
+        "custom_mobile_no": event_info.get("mobile_no"),
         "event_info": event_info,
     }
 
