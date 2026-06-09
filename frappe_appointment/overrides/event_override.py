@@ -618,6 +618,8 @@ def _create_event_for_appointment_group(
         "send_reminder": 0,
         "event_type": "Private",
         "custom_appointment_group": appointment_group.name,
+        "custom_meeting_type": event_info.get("meeting_type"),
+        "custom_meeting_note": event_info.get("note"),
         "event_info": event_info,
     }
 

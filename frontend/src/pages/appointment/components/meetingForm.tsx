@@ -170,7 +170,7 @@ const MeetingForm = ({
   return (
     <motion.div
       key={2}
-      className={`w-full md:h-[38rem] lg:w-[41rem] shrink-0 md:p-6 md:px-4 flex flex-col`}
+      className={`w-full h-[100dvh] md:h-[38rem] lg:w-[41rem] shrink-0 md:p-6 md:px-4 flex flex-col`}
       initial={isMobileView ? {} : { x: "100%" }}
       animate={{ x: 0 }}
       exit={isMobileView ? {} : { x: "100%" }}
@@ -181,7 +181,7 @@ const MeetingForm = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6 h-full flex flex-col min-h-0"
         >
-          <div className="space-y-4 flex-1 overflow-y-auto min-h-0 pr-1">
+          <div className="space-y-4 flex-1 overflow-y-auto min-h-0 pr-1 max-md:pb-16">
             <div className="flex gap-3 max-md:flex-col md:items-center md:justify-between">
               <Typography variant="p" className="text-2xl">
                 Your contact info
